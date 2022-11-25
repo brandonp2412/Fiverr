@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function Body() {
   return (
-    <main style={{ padding: 16, display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center' }}>
+    <main style={{ padding: 16, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
       <Card title="What is this?" extra={<a href="#">More</a>} style={{ width: 300 }}>
         <p>This is my example of using <Button style={{ padding: 0 }} type="link">React</Button> with
           <Button style={{ padding: 0 }} type="link">Ant Design</Button>
