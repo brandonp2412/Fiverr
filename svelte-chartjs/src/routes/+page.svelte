@@ -3,19 +3,22 @@
 	import chartjs from './chartjs-logo.svg';
 	import { Chart, type ChartItem, LinearScale, registerables } from 'chart.js';
 	import { onMount } from 'svelte';
+	Chart.register(...registerables);
+	Chart.defaults.color = 'white';
 
 	let barChart: HTMLCanvasElement;
 	let lineChart: HTMLCanvasElement;
 	let doughnutChart: HTMLCanvasElement;
-	let polarChart: HTMLCanvasElement;
 
 	onMount(() => {
-		Chart.register(...registerables);
-		Chart.defaults.color = 'white';
-
 		const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
-		new Chart(barChart, {
+		const barContext = barChart.getContext('2d');
+		const lineContext = lineChart.getContext('2d');
+		const doughnutContext = doughnutChart.getContext('2d');
+		if (!barContext || !lineContext || !doughnutContext) return;
+
+		new Chart(barContext, {
 			type: 'bar',
 			data: {
 				labels,
@@ -54,7 +57,7 @@
 			}
 		});
 
-		new Chart(lineChart, {
+		new Chart(lineContext, {
 			type: 'line',
 			data: {
 				labels: labels,
@@ -77,7 +80,7 @@
 			}
 		});
 
-		new Chart(doughnutChart, {
+		new Chart(doughnutContext, {
 			type: 'doughnut',
 			data: {
 				labels: ['Red', 'Blue', 'Yellow'],
@@ -98,33 +101,6 @@
 				}
 			}
 		});
-
-		new Chart(polarChart, {
-			type: 'polarArea',
-			data: {
-				labels: ['Red', 'Green', 'Yellow', 'Grey', 'Blue'],
-				datasets: [
-					{
-						label: 'My First Dataset',
-						data: [11, 16, 7, 3, 14],
-						backgroundColor: [
-							'rgb(255, 99, 132)',
-							'rgb(75, 192, 192)',
-							'rgb(255, 205, 86)',
-							'rgb(201, 203, 207)',
-							'rgb(54, 162, 235)'
-						]
-					}
-				]
-			},
-			options: {
-				scales: {
-					y: {
-						beginAtZero: true
-					}
-				}
-			}
-		});
 	});
 </script>
 
@@ -134,24 +110,17 @@
 		<h1>Svelte + Chart.js</h1>
 		<img src={chartjs} alt="Chart.js logo" height="75" />
 	</header>
-	<div class="card">
-		<h2>What is this?</h2>
-		<p>Svelte is my favorite web framework, and Chart.js is a library to craft beautiful charts.</p>
-	</div>
 
 	<div class="charts">
-		<div class="card">
+		<div class="card bar">
 			<canvas bind:this={barChart} />
 		</div>
-		<div class="card">
+		<div class="card bar">
 			<canvas bind:this={lineChart} />
 		</div>
 	</div>
 
 	<div class="charts">
-		<div class="card">
-			<canvas bind:this={polarChart} />
-		</div>
 		<div class="card">
 			<canvas bind:this={doughnutChart} />
 		</div>
@@ -163,16 +132,13 @@
 		font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
 	}
 
-	h2 {
-		margin: 0;
-	}
-
 	main {
 		gap: 16px;
 		margin: 16px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		height: 100%;
 	}
 
 	header {
@@ -181,7 +147,6 @@
 	}
 
 	.card {
-		width: 300px;
 		padding: 1em;
 		display: grid;
 		align-items: center;
